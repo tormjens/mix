@@ -1,0 +1,31 @@
+{
+  "name": "tormjens/mix",
+  "type": "standard",
+  "description": "Extended version of the Laravel Mix helper.",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "homepage": "https://github.com/tormjens/mix",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "TorMorten\\Mix\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TorMorten\\MixTests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^5.0",
+    "phpunit/phpunit": "^9.0",
+    "nunomaduro/collision": "^5.0",
+    "pestphp/pest": "dev-master"
+  }
+}
