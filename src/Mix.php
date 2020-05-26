@@ -4,9 +4,9 @@ namespace TorMorten\Mix;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\HtmlString;
-use TorMorten\Mix\Traits\ResolveCdn;
-use TorMorten\Mix\Traits\ResolveHmr;
-use TorMorten\Mix\Traits\ResolveLocal;
+use TorMorten\Mix\Resolvers\ResolveCdn;
+use TorMorten\Mix\Resolvers\ResolveHmr;
+use TorMorten\Mix\Resolvers\ResolveLocal;
 
 class Mix
 {

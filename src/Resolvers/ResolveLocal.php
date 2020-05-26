@@ -1,6 +1,6 @@
 <?php
 
-namespace TorMorten\Mix\Traits;
+namespace TorMorten\Mix\Resolvers;
 
 use Illuminate\Support\Facades\Config;
 
@@ -30,14 +30,14 @@ class ResolveLocal
         return $this->inManifest($params) && is_dir($this->getFilePath($params, ''));
     }
 
-    protected function getFilePath($params, $path)
+    public function getFilePath($params, $path)
     {
         $filePath = [
-            Config::get('mix.home'),
-            'vendor',
-            $params['package'],
-            Config::get('mix.driver.local.directory'),
-            $path
+            rtrim(Config::get('mix.home'), '/'),
+            trim(Config::get('mix.vendor_dir'), '/'),
+            trim($params['package'], '/'),
+            trim(Config::get('mix.driver.local.directory'), '/'),
+            trim($path, '/')
         ];
 
         return join('/', $filePath);
@@ -56,7 +56,7 @@ class ResolveLocal
         }
     }
 
-    protected function inManifest($params)
+    public function inManifest($params)
     {
         $manifest = $this->getManifest($params);
         $key = '/' . ltrim($params['filename']);

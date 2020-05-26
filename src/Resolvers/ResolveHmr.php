@@ -1,6 +1,6 @@
 <?php
 
-namespace TorMorten\Mix\Traits;
+namespace TorMorten\Mix\Resolvers;
 
 use Illuminate\Support\Facades\Config;
 
@@ -10,7 +10,7 @@ class ResolveHmr
     {
         $path = join('/', [
             Config::get('mix.home'),
-            'vendor',
+            Config::get('mix.vendor_dir'),
             $params['package'],
             Config::get('mix.driver.hmr.directory'),
             'hot'

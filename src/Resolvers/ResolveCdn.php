@@ -1,6 +1,6 @@
 <?php
 
-namespace TorMorten\Mix\Traits;
+namespace TorMorten\Mix\Resolvers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -86,14 +86,14 @@ class ResolveCdn
     protected function getInstalledPackages()
     {
         if (!static::$installedPackages) {
-            static::$installedPackages = json_decode(
+            static::$installedPackages = new Collection(json_decode(
                 file_get_contents(
                     rtrim(Config::get('mix.home'), '/') . '/vendor/composer/installed.json'
                 ),
                 true
-            );
+            ));
         }
 
-        return new Collection(static::$installedPackages);
+        return static::$installedPackages;
     }
 }

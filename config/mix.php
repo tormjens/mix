@@ -2,6 +2,7 @@
 
 return [
     'home' => base_path(),
+    'vendor_dir' => env('MIX_VENDOR_DIR', 'vendor'),
     'use_manifest' => env('MIX_USE_MANIFEST', true),
     'driver' => [
         'cdn' => [
