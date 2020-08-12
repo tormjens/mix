@@ -1,5 +1,5 @@
 {
-  "name": "tormjens/mix",
+  "name": "tormjens/extended-mix",
   "type": "standard",
   "description": "Extended version of the Laravel Mix helper.",
   "minimum-stability": "dev",
