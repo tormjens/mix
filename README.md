@@ -17,6 +17,34 @@ Locally we wanted to still be able to use HMR (hot reloading) or just compiling 
 
 In production we wanted assets to be found via our CDN.
 
+# Installation
+
+Grab the package via Composer
+```
+composer require tormjens/extended-mix
+```
+
+This package does not have auto-discovery enabled as the application it is built for loads it and modifies the config
+for it at runtime. To enable the package you either have to register it via your `config/app.php` or within a 
+serviceprovider loaded in your "main module".
+
+This example is taken out of the `core` module of my application.
+
+```php
+public function register()
+{
+    $this->app->register(MixServiceProvider::class);
+    $config = config('mix');
+    $config['driver']['cdn'] = [
+        'include_vendor' => env('MIX_CDN_INCLUDE_VENDOR', false),
+        'url' => env('MIX_CDN_URL', 'https://cdn.foo.com'),
+        'format' => env('MIX_CDN_FORMAT', '{url}/{package}/{version}/{path}'),
+    ];
+    
+    config(['mix' => $config]);
+}
+```
+
 ## Getting the URL of an asset
 
 It is actually very simple. Wherever you need the URL to an asset you'll simply use:

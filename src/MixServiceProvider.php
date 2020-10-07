@@ -14,16 +14,18 @@ class MixServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+    }
+
+    public function register()
+    {
+
         $this->mergeConfigFrom(__DIR__ . '/../config/mix.php', 'mix');
 
         Route::middleware(Config::get('mix.route.middleware'))
             ->get(Config::get('mix.route.url'), MixController::class)
             ->name('mix.show')
             ->where('path', '.*');
-    }
 
-    public function register()
-    {
         $this->app->singleton(ResolveCdn::class, function () {
             return new ResolveCdn();
         });

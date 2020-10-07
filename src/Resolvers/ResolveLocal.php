@@ -11,7 +11,6 @@ class ResolveLocal
     public function handle(array $params, \Closure $next)
     {
         $this->params = $params;
-
         if ($this->exists()) {
             return route('mix.show', ['path' => join('/', [
                 $params['package'],
