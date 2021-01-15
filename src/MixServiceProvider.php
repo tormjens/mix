@@ -18,7 +18,6 @@ class MixServiceProvider extends ServiceProvider
 
     public function register()
     {
-
         $this->mergeConfigFrom(__DIR__ . '/../config/mix.php', 'mix');
 
         Route::middleware(Config::get('mix.route.middleware'))
@@ -26,20 +25,9 @@ class MixServiceProvider extends ServiceProvider
             ->name('mix.show')
             ->where('path', '.*');
 
-        $this->app->singleton(ResolveCdn::class, function () {
-            return new ResolveCdn();
-        });
-
-        $this->app->singleton(ResolveHmr::class, function () {
-            return new ResolveHmr();
-        });
-
-        $this->app->singleton(ResolveLocal::class, function () {
-            return new ResolveLocal();
-        });
-
-        $this->app->singleton(Mix::class, function () {
-            return new Mix();
-        });
+        $this->app->singleton(ResolveCdn::class);
+        $this->app->singleton(ResolveHmr::class);
+        $this->app->singleton(ResolveLocal::class);
+        $this->app->singleton(Mix::class);
     }
 }

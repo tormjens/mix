@@ -18,6 +18,7 @@ return [
         ]
     ],
     'route' => [
+        'enabled' => true,
         'url' => env('MIX_LOCAL_URL', 'mix/{path}'),
         'middleware' => []
     ]

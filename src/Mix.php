@@ -19,15 +19,31 @@ class Mix
         $this->home = $home;
     }
 
-    public function handle($filename, $package)
+    public function handle($filename, $package, $forceLocal = false)
     {
+        // never try to resolve while in a local mix request
+        if ($this->inLocalMixRequest()) {
+            return '';
+        }
+
+        $pipes = [
+            ResolveHmr::class,
+            ResolveLocal::class,
+            ResolveCdn::class,
+        ];
+
+        if ($forceLocal) {
+            $pipes = [ResolveLocal::class];
+        }
+
         return resolve(Pipeline::class)
-            ->send(compact('filename', 'package'))
-            ->through([
-                ResolveHmr::class,
-                ResolveLocal::class,
-                ResolveCdn::class,
-            ])
+            ->send(compact('filename', 'package', 'forceLocal'))
+            ->through($pipes)
             ->then(fn($params) => new HtmlString(is_string($params) ? $params : ''));
+    }
+
+    public function inLocalMixRequest()
+    {
+        return request()->is('mix/*');
     }
 }

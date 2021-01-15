@@ -3,6 +3,8 @@
 namespace TorMorten\Mix\Resolvers;
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class ResolveLocal
 {
@@ -12,10 +14,11 @@ class ResolveLocal
     {
         $this->params = $params;
         if ($this->exists()) {
-            return route('mix.show', ['path' => join('/', [
-                $params['package'],
-                $this->inManifest($params)
-            ])]);
+            $path = $this->inManifest($params);
+            return url('mix/' . join('/', [
+                    $params['package'],
+                    Str::startsWith($path, '/') ? substr($path, 1) : $path
+                ]));
         }
 
         return $next($params);
@@ -26,6 +29,7 @@ class ResolveLocal
         if (!$params) {
             $params = $this->params;
         }
+
         return $this->inManifest($params) && is_dir($this->getFilePath($params, ''));
     }
 
@@ -44,13 +48,19 @@ class ResolveLocal
 
     protected function getManifest($params)
     {
+        if ($params['forceLocal'] ?? false) {
+            return [
+                Str::start($params['filename'], '/') => $params['filename']
+            ];
+        }
+
         try {
             $path = $this->getFilePath($params, 'mix-manifest.json');
             $manifest = file_get_contents($path);
             return json_decode($manifest, true);
         } catch (\Exception $e) {
             return [
-                '/' . $params['filename'] => $params['filename']
+                Str::start($params['filename'], '/') => $params['filename']
             ];
         }
     }
@@ -58,7 +68,7 @@ class ResolveLocal
     public function inManifest($params)
     {
         $manifest = $this->getManifest($params);
-        $key = '/' . ltrim($params['filename']);
+        $key = Str::start($params['filename'], '/');
         return isset($manifest[$key]) ? $manifest[$key] : false;
     }
 }

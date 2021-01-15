@@ -18,9 +18,8 @@ class ResolveCdn
         $this->params = $params;
         if (Config::get('mix.driver.cdn.url')) {
             $packages = $this->getInstalledPackages();
-
             if (($packages = $packages->where('name', $params['package']))->isNotEmpty()) {
-                return $this->getMixUrl($packages->first()['version']);
+                return $this->getMixUrl(app()->environment('local') ? 'develop' : $packages->first()['version']);
             }
         }
 
@@ -30,9 +29,7 @@ class ResolveCdn
     public function getMixUrl($version)
     {
         $manifest = $this->getManifest($version);
-
         $key = '/' . ltrim($this->params['filename'], '/');
-
         if (isset($manifest[$key])) {
             return $this->buildUrl($version, $manifest[$key]);
         }
@@ -80,6 +77,7 @@ class ResolveCdn
                 ];
             }
         };
+        return $getManifest();
         return Cache::rememberForever("mix:manifest:{$package}:{$version}", $getManifest);
     }
 
@@ -91,7 +89,7 @@ class ResolveCdn
                     rtrim(Config::get('mix.home'), '/') . '/vendor/composer/installed.json'
                 ),
                 true
-            ));
+            )['packages']);
         }
 
         return static::$installedPackages;
