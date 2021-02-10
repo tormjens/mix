@@ -18,7 +18,7 @@ class ResolveCdn
         if (Config::get('mix.driver.cdn.url')) {
             $packages = $this->getInstalledPackages();
             if (($packages = $packages->where('name', $params['package']))->isNotEmpty()) {
-                return $this->getMixUrl(app()->environment('local') ? 'develop' : $packages->first()['version']);
+                return $this->getMixUrl(app()->environment('local', 'testing') ? 'develop' : $packages->first()['version']);
             }
         }
 

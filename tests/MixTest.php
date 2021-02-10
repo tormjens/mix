@@ -12,7 +12,7 @@ it('checks the cdn', function () {
         'mix.vendor_dir' => 'tests/vendor'
     ]);
 
-    $this->assertEquals('http://cdn.mix.test/framework/v7.28.4/css/app.css', resolve(Mix::class)->handle('css/app.css', 'laravel/framework'));
+    $this->assertEquals('http://cdn.mix.test/framework/develop/css/app.css', resolve(Mix::class)->handle('css/app.css', 'laravel/framework'));
 });
 
 it('checks for hot module reloading', function () {

@@ -67,7 +67,7 @@ class VariableAsset
             rtrim(Config::get('mix.driver.cdn.url'), '/'),
             $vendor,
             $package,
-            app()->environment('local') ? 'develop' : $packageInfo['version'],
+            app()->environment('local', 'testing') ? 'develop' : $packageInfo['version'],
             ltrim($filename, '/'),
         ];
 
