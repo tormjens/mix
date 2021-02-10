@@ -6,11 +6,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use TorMorten\Mix\Mix;
+use TorMorten\Mix\Support\Packages;
 
 class ResolveCdn
 {
-    public static $installedPackages;
-
     protected $params;
 
     public function handle(array $params, \Closure $next)
@@ -78,20 +77,10 @@ class ResolveCdn
             }
         };
         return $getManifest();
-        return Cache::rememberForever("mix:manifest:{$package}:{$version}", $getManifest);
     }
 
     protected function getInstalledPackages()
     {
-        if (!static::$installedPackages) {
-            static::$installedPackages = new Collection(json_decode(
-                file_get_contents(
-                    rtrim(Config::get('mix.home'), '/') . '/vendor/composer/installed.json'
-                ),
-                true
-            )['packages']);
-        }
-
-        return static::$installedPackages;
+        return resolve(Packages::class)->values();
     }
 }

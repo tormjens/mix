@@ -9,6 +9,7 @@ use TorMorten\Mix\Http\Controllers\MixController;
 use TorMorten\Mix\Resolvers\ResolveCdn;
 use TorMorten\Mix\Resolvers\ResolveHmr;
 use TorMorten\Mix\Resolvers\ResolveLocal;
+use TorMorten\Mix\Support\Packages;
 
 class MixServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,7 @@ class MixServiceProvider extends ServiceProvider
         $this->app->singleton(ResolveCdn::class);
         $this->app->singleton(ResolveHmr::class);
         $this->app->singleton(ResolveLocal::class);
+        $this->app->singleton(Packages::class);
         $this->app->singleton(Mix::class);
     }
 }

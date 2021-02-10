@@ -35,6 +35,10 @@ class MixController
                     $mime = mime_content_type($path);
             }
 
+            if (!$mime) {
+                $mime = 'text/plain';
+            }
+
             return Response::make(
                 file_get_contents($path),
                 200,
