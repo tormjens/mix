@@ -36,14 +36,14 @@ This example is taken out of the `core` module of my application.
 public function register()
 {
     $this->app->register(MixServiceProvider::class);
-    $config = config('mix');
-    $config['driver']['cdn'] = [
-        'include_vendor' => env('MIX_CDN_INCLUDE_VENDOR', false),
-        'url' => env('MIX_CDN_URL', 'https://cdn.foo.com'),
-        'format' => env('MIX_CDN_FORMAT', '{url}/{package}/{version}/{path}'),
-    ];
     
-    config(['mix' => $config]);
+    config([
+        'mix.driver.cdn' => [
+            'include_vendor' => env('MIX_CDN_INCLUDE_VENDOR', false),
+            'url' => env('MIX_CDN_URL', 'https://cdn.foo.com'),
+            'format' => env('MIX_CDN_FORMAT', '{url}/{package}/{version}/{path}'),
+        ]
+    ]);
 }
 ```
 
