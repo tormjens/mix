@@ -12,12 +12,17 @@ class Packages
     protected function prepare()
     {
         if (!$this->packages) {
-            $this->packages = new Collection(json_decode(
+            $packages = json_decode(
                 file_get_contents(
                     rtrim(Config::get('mix.home'), '/') . '/vendor/composer/installed.json'
                 ),
                 true
-            )['packages']);
+            );
+
+            if (isset($packages['packages'])) {
+                $packages = $packages['packages'];
+            }
+            $this->packages = new Collection($packages);
         }
     }
 
