@@ -4,6 +4,7 @@ namespace TorMorten\Mix;
 
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\HtmlString;
+use TorMorten\Mix\Resolvers\ResolveCache;
 use TorMorten\Mix\Resolvers\ResolveCdn;
 use TorMorten\Mix\Resolvers\ResolveHmr;
 use TorMorten\Mix\Resolvers\ResolveLocal;
@@ -29,6 +30,7 @@ class Mix
         $pipes = [
             ResolveHmr::class,
             ResolveLocal::class,
+            ResolveCache::class,
             ResolveCdn::class,
         ];
 

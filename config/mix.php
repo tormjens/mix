@@ -4,6 +4,10 @@ return [
     'home' => base_path(),
     'vendor_dir' => env('MIX_VENDOR_DIR', 'vendor'),
     'use_manifest' => env('MIX_USE_MANIFEST', true),
+    'cache' => [
+        'enabled' => env('MIX_CACHE_ENABLED', true),
+        'key' => env('MIX_CACHE_KEY', basename(base_path())),
+    ],
     'driver' => [
         'cdn' => [
             'include_vendor' => env('MIX_CDN_INCLUDE_VENDOR', false),
