@@ -20,7 +20,7 @@ class ResolveCdn
             if (($packages = $packages->where('name', $params['package']))->isNotEmpty()) {
                 $url = $this->getMixUrl(app()->environment('local', 'testing') ? 'develop' : $packages->first()['version']);
                 if (config('mix.cache.enabled', true)) {
-                    Cache::put(resolve(ResolveCache::class)->cacheKey($params['package']), $url);
+                    Cache::put(resolve(ResolveCache::class)->cacheKey($params['package'], $params['filename']), $url);
                 }
                 return $url;
             }

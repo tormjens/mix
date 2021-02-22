@@ -14,19 +14,19 @@ class ResolveCache
     public function handle(array $params, \Closure $next)
     {
         if (config('mix.cache.enabled', true)) {
-            if (Cache::has($this->cacheKey($params['package']))) {
-                return Cache::get($this->cacheKey($params['package']));
+            if (Cache::has($this->cacheKey($params['package'], $params['filename']))) {
+                return Cache::get($this->cacheKey($params['package'], $params['filename']));
             }
         }
         return $next($params);
     }
 
-    public function cacheKey($package)
+    public function cacheKey($package, $filename)
     {
         return join(':', [
             'mix',
             config('mix.cache.key'),
-            md5($package)
+            md5($package . $filename)
         ]);
     }
 
