@@ -22,8 +22,7 @@ class Mix
 
     public function handle($filename, $package, $forceLocal = false)
     {
-        // never try to resolve while in a local mix request
-        if ($this->inLocalMixRequest()) {
+        if (!$this->shouldProcess()) {
             return '';
         }
 
@@ -42,6 +41,15 @@ class Mix
             ->send(compact('filename', 'package', 'forceLocal'))
             ->through($pipes)
             ->then(fn($params) => new HtmlString(is_string($params) ? $params : ''));
+    }
+
+    public function shouldProcess()
+    {
+        if (!$this->inLocalMixRequest() && app()->runningUnitTests()) {
+            return config('mix.run_in_tests', true);
+        }
+
+        return false;
     }
 
     public function inLocalMixRequest()
