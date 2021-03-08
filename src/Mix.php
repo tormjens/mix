@@ -46,7 +46,7 @@ class Mix
     public function shouldProcess()
     {
         if (!$this->inLocalMixRequest() && app()->runningUnitTests()) {
-            return !config('mix.run_in_tests', false);
+            return config('mix.run_in_tests', false);
         }
 
         return !$this->inLocalMixRequest();

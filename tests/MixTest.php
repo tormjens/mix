@@ -7,6 +7,7 @@ uses(TestCase::class);
 
 it('checks the cdn', function () {
     config([
+        'mix.run_in_tests' => true,
         'mix.driver.cdn.url' => 'http://cdn.mix.test',
         'mix.home' => __DIR__ . '/../',
         'mix.vendor_dir' => 'tests/vendor'
@@ -17,6 +18,7 @@ it('checks the cdn', function () {
 
 it('checks for hot module reloading', function () {
     config([
+        'mix.run_in_tests' => true,
         'mix.driver.hmr.directory' => 'assets',
         'mix.home' => __DIR__,
         'mix.vendor_dir' => 'hmr/vendor'
@@ -27,6 +29,7 @@ it('checks for hot module reloading', function () {
 
 it('checks locally', function () {
     config([
+        'mix.run_in_tests' => true,
         'mix.driver.local.directory' => 'assets',
         'mix.home' => __DIR__,
         'mix.vendor_dir' => 'vendor'
@@ -37,6 +40,7 @@ it('checks locally', function () {
 
 it('verifies that the route works', function () {
     config([
+        'mix.run_in_tests' => true,
         'mix.driver.local.directory' => 'assets',
         'mix.home' => __DIR__,
         'mix.vendor_dir' => 'vendor'
