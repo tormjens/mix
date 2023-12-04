@@ -1,5 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\App;
+use TorMorten\Mix\Resolvers\ResolveCache;
+use TorMorten\Mix\Resolvers\ResolveCdn;
+use TorMorten\Mix\Resolvers\ResolveHmr;
+use TorMorten\Mix\Resolvers\ResolveLocal;
+
 return [
     'home' => base_path(),
     'vendor_dir' => env('MIX_VENDOR_DIR', 'vendor'),
@@ -26,5 +32,26 @@ return [
         'enabled' => true,
         'url' => env('MIX_LOCAL_URL', 'mix/{path}'),
         'middleware' => []
-    ]
+    ],
+
+    'in_production' => env('MIX_IN_PRODUCTION', App::isProduction()),
+
+    'resolvers' => [
+        'production' => [
+            ResolveCache::class,
+            ResolveLocal::class,
+            ResolveCdn::class,
+        ],
+        'dev' => [
+            ResolveHmr::class,
+            ResolveCache::class,
+            ResolveLocal::class,
+            ResolveCdn::class,
+        ],
+        'local' => [
+            ResolveHmr::class,
+            ResolveLocal::class
+        ]
+
+    ],
 ];

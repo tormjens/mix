@@ -15,7 +15,6 @@ class ResolveHmr
             Config::get('mix.driver.hmr.directory'),
             'hot'
         ]);
-
         if (file_exists($path)) {
             $url = rtrim(trim(file_get_contents($path)), '/');
             return $url . '/' . ltrim($params['filename'], '/');

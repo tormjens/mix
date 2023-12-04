@@ -21,11 +21,18 @@ class ResolveCache
         return $next($params);
     }
 
-    public function cacheKey($package, $filename)
+    public function cacheKeyPrefix()
     {
         return join(':', [
             'mix',
-            config('mix.cache.key'),
+            config('mix.cache.key')
+        ]);
+    }
+
+    public function cacheKey($package, $filename)
+    {
+        return join(':', [
+            $this->cacheKeyPrefix(),
             md5($package . $filename)
         ]);
     }

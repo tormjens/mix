@@ -2,8 +2,8 @@
 
 namespace TorMorten\Mix\Resolvers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 class ResolveLocal
@@ -15,10 +15,15 @@ class ResolveLocal
         $this->params = $params;
         if ($this->exists()) {
             $path = $this->inManifest($params);
-            return url('mix/' . join('/', [
+            $url = url('mix/' . join('/', [
                     $params['package'],
                     Str::startsWith($path, '/') ? substr($path, 1) : $path
-                ]));
+                ])
+
+            );
+            Cache::put(resolve(ResolveCache::class)->cacheKey($params['package'], $params['filename']), $url);
+
+            return $url;
         }
 
         return $next($params);

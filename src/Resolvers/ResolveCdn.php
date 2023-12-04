@@ -5,6 +5,7 @@ namespace TorMorten\Mix\Resolvers;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use TorMorten\Mix\Mix;
 use TorMorten\Mix\Support\Packages;
 
@@ -76,7 +77,7 @@ class ResolveCdn
                 return json_decode($manifest, true);
             } catch (\Exception $e) {
                 return [
-                    '/' . $this->params['filename'] => $this->params['filename']
+                    Str::start($this->params['filename'], '/') => $this->params['filename']
                 ];
             }
         };

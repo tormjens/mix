@@ -3,6 +3,7 @@
 namespace TorMorten\Mix;
 
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\HtmlString;
 use TorMorten\Mix\Resolvers\ResolveCache;
 use TorMorten\Mix\Resolvers\ResolveCdn;
@@ -26,15 +27,14 @@ class Mix
             return '';
         }
 
-        $pipes = [
-            ResolveHmr::class,
-            ResolveLocal::class,
-            ResolveCache::class,
-            ResolveCdn::class,
-        ];
+        $pipes = Config::get('mix.resolvers.dev');
+
+        if (Config::get('mix.in_production')) {
+            $pipes = Config::get('mix.resolvers.production');
+        }
 
         if ($forceLocal) {
-            $pipes = [ResolveLocal::class];
+            $pipes = Config::get('mix.resolvers.local');
         }
 
         return resolve(Pipeline::class)
