@@ -31,11 +31,15 @@ class ResolveLocal
 
     public function exists($params = null)
     {
+
         if (!$params) {
             $params = $this->params;
         }
 
-        return $this->inManifest($params) && is_dir($this->getFilePath($params, ''));
+        if (!is_dir($this->getFilePath($params, ''))) {
+            return false;
+        }
+        return $this->inManifest($params);
     }
 
     public function getFilePath($params, $path)

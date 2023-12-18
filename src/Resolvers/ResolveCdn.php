@@ -5,6 +5,7 @@ namespace TorMorten\Mix\Resolvers;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use TorMorten\Mix\Mix;
 use TorMorten\Mix\Support\Packages;
@@ -70,11 +71,14 @@ class ResolveCdn
     protected function getManifest($version)
     {
         $package = $this->params['package'];
-        $getManifest = function () use ($version) {
-            $path = $this->buildUrl($version, 'mix-manifest.json');
+        $getManifest = function () use ($version, $package) {
+            $path = $this->buildUrl($version, 'mix-manifest.json?time=' . now()->format('YmdHis'));
             try {
-                $manifest = file_get_contents($path);
-                return json_decode($manifest, true);
+                $manifest = Http::get($path)->json();
+                if (!$manifest) {
+                    throw new \Exception('No manifest found.');
+                }
+                return $manifest;
             } catch (\Exception $e) {
                 return [
                     Str::start($this->params['filename'], '/') => $this->params['filename']
