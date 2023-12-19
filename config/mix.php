@@ -44,8 +44,8 @@ return [
         ],
         'dev' => [
             ResolveHmr::class,
-            ResolveCache::class,
             ResolveLocal::class,
+            ResolveCache::class,
             ResolveCdn::class,
         ],
         'local' => [
