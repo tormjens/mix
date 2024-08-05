@@ -5,12 +5,14 @@ use TorMorten\Mix\Resolvers\ResolveCache;
 use TorMorten\Mix\Resolvers\ResolveCdn;
 use TorMorten\Mix\Resolvers\ResolveHmr;
 use TorMorten\Mix\Resolvers\ResolveLocal;
+use TorMorten\Mix\Resolvers\ResolveStaging;
 
 return [
     'home' => base_path(),
     'vendor_dir' => env('MIX_VENDOR_DIR', 'vendor'),
     'use_manifest' => env('MIX_USE_MANIFEST', true),
     'run_in_tests' => false,
+    'force_staging' => env('MIX_FORCE_STAGING', false),
     'cache' => [
         'enabled' => env('MIX_CACHE_ENABLED', true),
         'key' => env('MIX_CACHE_KEY', basename(base_path())),
@@ -45,12 +47,14 @@ return [
         'dev' => [
             ResolveHmr::class,
             ResolveLocal::class,
+            ResolveStaging::class,
             ResolveCache::class,
             ResolveCdn::class,
         ],
         'local' => [
             ResolveHmr::class,
-            ResolveLocal::class
+            ResolveLocal::class,
+            ResolveStaging::class
         ]
 
     ],
