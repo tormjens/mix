@@ -9,6 +9,7 @@ use TorMorten\Mix\Resolvers\ResolveCache;
 use TorMorten\Mix\Resolvers\ResolveCdn;
 use TorMorten\Mix\Resolvers\ResolveHmr;
 use TorMorten\Mix\Resolvers\ResolveLocal;
+use TorMorten\Mix\Resolvers\ResolveFallback;
 
 class Mix
 {
@@ -35,6 +36,10 @@ class Mix
 
         if ($forceLocal) {
             $pipes = Config::get('mix.resolvers.local');
+        }
+
+        if (Config::get('mix.always_return', true)) {
+            $pipes[] = ResolveFallback::class;
         }
 
         return resolve(Pipeline::class)

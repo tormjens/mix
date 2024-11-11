@@ -18,7 +18,7 @@ class ResolveStaging
     {
         $this->params = $params;
         if (Config::get('mix.driver.cdn.url') && Config::get('mix.force_staging')) {
-            return $this->buildUrl('develop', $params['filename']) . '?module=' . explode('/', $params['package'])[1] . '&cahe=' . now()->format('Ymdhis');
+            return $this->buildUrl('develop', $params['filename']) . '?module=' . explode('/', $params['package'])[1] . '&cache=' . now()->format('Ymdhis');
         }
 
         return $next($params);

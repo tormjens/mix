@@ -17,6 +17,7 @@ return [
         'enabled' => env('MIX_CACHE_ENABLED', true),
         'key' => env('MIX_CACHE_KEY', basename(base_path())),
     ],
+    'always_return' => env('MIX_ALWAYS_RETURN', true), // when set to true mix will always return a value, even though none is found. helps with limiting uneccesary exceptions
     'driver' => [
         'cdn' => [
             'include_vendor' => env('MIX_CDN_INCLUDE_VENDOR', false),
