@@ -14,13 +14,22 @@ class ResolveCdn
 {
     protected $params;
 
+    public function isDevEnvironment()
+    {
+        if (Str::contains(url()->current(), '.test') || Str::contains(url()->current(), '.staging') || Str::contains(url()->current(), '.dev')) {
+            return true;
+        }
+
+        return app()->environment('local', 'testing');
+    }
+
     public function handle(array $params, \Closure $next)
     {
         $this->params = $params;
         if (Config::get('mix.driver.cdn.url')) {
             $packages = $this->getInstalledPackages();
             if (($packages = $packages->where('name', $params['package']))->isNotEmpty()) {
-                $url = $this->getMixUrl(app()->environment('local', 'testing') ? 'develop' : $packages->first()['version']);
+                $url = $this->getMixUrl($this->isDevEnvironment() ? 'develop' : $packages->first()['version']);
                 if (config('mix.cache.enabled', true)) {
                     Cache::put(resolve(ResolveCache::class)->cacheKey($params['package'], $params['filename']), $url);
                 }
