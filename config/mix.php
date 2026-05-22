@@ -23,6 +23,7 @@ return [
             'include_vendor' => env('MIX_CDN_INCLUDE_VENDOR', false),
             'url' => env('MIX_CDN_URL', 'http://localhost'),
             'format' => env('MIX_CDN_FORMAT', '{url}/{vendor}/{package}/{version}/{path}'),
+            'develop_cache_minutes' => env('MIX_CDN_DEVELOP_CACHE_MINUTES', 30),
         ],
         'local' => [
             'directory' => env('MIX_LOCAL_DIR', 'dist'),

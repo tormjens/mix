@@ -12,7 +12,17 @@ use TorMorten\Mix\Support\Packages;
 
 class ResolveCdn
 {
+    protected const DEFAULT_DEV_CACHE_MINUTES = 30;
+    protected const MIN_DEV_CACHE_MINUTES = 1;
+    protected const CACHE_BUST_TOKEN_LENGTH = 12;
+
     protected $params;
+    protected $resolveCache;
+
+    public function __construct(ResolveCache $resolveCache)
+    {
+        $this->resolveCache = $resolveCache;
+    }
 
     public function isDevEnvironment()
     {
@@ -29,9 +39,16 @@ class ResolveCdn
         if (Config::get('mix.driver.cdn.url')) {
             $packages = $this->getInstalledPackages();
             if (($packages = $packages->where('name', $params['package']))->isNotEmpty()) {
-                $url = $this->getMixUrl($this->isDevEnvironment() ? 'develop' : $packages->first()['version']);
+                $isDevEnvironment = $this->isDevEnvironment();
+                $version = $isDevEnvironment ? 'develop' : $packages->first()['version'];
+                $url = $isDevEnvironment ? $this->buildDevMixUrl($version) : $this->getMixUrl($version);
                 if (config('mix.cache.enabled', true)) {
-                    Cache::put(resolve(ResolveCache::class)->cacheKey($params['package'], $params['filename']), $url);
+                    $cacheKey = $this->resolveCache->cacheKey($params['package'], $params['filename']);
+                    if ($isDevEnvironment) {
+                        Cache::put($cacheKey, $url, now()->addMinutes($this->devCacheMinutes()));
+                    } else {
+                        Cache::put($cacheKey, $url);
+                    }
                 }
                 return $url;
             }
@@ -49,6 +66,47 @@ class ResolveCdn
         }
 
         return null;
+    }
+
+    public function buildDevMixUrl($version)
+    {
+        $url = $this->buildUrl($version, ltrim($this->params['filename'], '/'));
+        $separator = Str::contains($url, '?') ? '&' : '?';
+        $cacheBustValue = $this->getDevCacheBustValue();
+
+        return $url . $separator . 'cache=' . $cacheBustValue;
+    }
+
+    protected function getDevCacheBustValue()
+    {
+        if (!config('mix.cache.enabled', true)) {
+            return Str::random(self::CACHE_BUST_TOKEN_LENGTH);
+        }
+
+        return Cache::remember(
+            $this->devCacheBustCacheKey(),
+            now()->addMinutes($this->devCacheMinutes()),
+            fn () => Str::random(self::CACHE_BUST_TOKEN_LENGTH)
+        );
+    }
+
+    protected function devCacheBustCacheKey()
+    {
+        return implode(':', [
+            $this->resolveCache->cacheKeyPrefix(),
+            'cdn',
+            'develop',
+            'cache_bust',
+            md5($this->params['package'] . $this->params['filename']),
+        ]);
+    }
+
+    protected function devCacheMinutes()
+    {
+        return max(
+            (int) Config::get('mix.driver.cdn.develop_cache_minutes', self::DEFAULT_DEV_CACHE_MINUTES),
+            self::MIN_DEV_CACHE_MINUTES
+        );
     }
 
 

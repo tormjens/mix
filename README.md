@@ -42,6 +42,7 @@ public function register()
             'include_vendor' => env('MIX_CDN_INCLUDE_VENDOR', false),
             'url' => env('MIX_CDN_URL', 'https://cdn.foo.com'),
             'format' => env('MIX_CDN_FORMAT', '{url}/{package}/{version}/{path}'),
+            'develop_cache_minutes' => env('MIX_CDN_DEVELOP_CACHE_MINUTES', 30),
         ]
     ]);
 }
