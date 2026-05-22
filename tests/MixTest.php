@@ -2,6 +2,7 @@
 
 use TorMorten\Mix\Mix;
 use TorMorten\MixTests\TestCase;
+use Illuminate\Support\Facades\Http;
 
 uses(TestCase::class);
 
@@ -13,7 +14,12 @@ it('checks the cdn', function () {
         'mix.vendor_dir' => 'tests/vendor'
     ]);
 
-    $this->assertEquals('http://cdn.mix.test/framework/develop/css/app.css', resolve(Mix::class)->handle('css/app.css', 'laravel/framework'));
+    Http::fake();
+
+    $url = resolve(Mix::class)->handle('css/app.css', 'laravel/framework');
+
+    $this->assertStringStartsWith('http://cdn.mix.test/framework/develop/css/app.css?cache=', (string) $url);
+    Http::assertNothingSent();
 });
 
 it('checks for hot module reloading', function () {
