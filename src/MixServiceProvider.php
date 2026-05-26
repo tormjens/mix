@@ -27,6 +27,7 @@ class MixServiceProvider extends ServiceProvider
         $this->app->singleton(Resolvers\ResolveCdn::class);
         $this->app->singleton(Resolvers\ResolveHmr::class);
         $this->app->singleton(Resolvers\ResolveLocal::class);
+        $this->app->singleton(Resolvers\ResolveVite::class);
         $this->app->singleton(Support\Packages::class);
         $this->app->singleton(Mix::class);
     }

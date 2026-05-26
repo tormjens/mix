@@ -6,6 +6,7 @@ use TorMorten\Mix\Resolvers\ResolveCdn;
 use TorMorten\Mix\Resolvers\ResolveHmr;
 use TorMorten\Mix\Resolvers\ResolveLocal;
 use TorMorten\Mix\Resolvers\ResolveStaging;
+use TorMorten\Mix\Resolvers\ResolveVite;
 
 return [
     'home' => base_path(),
@@ -43,11 +44,13 @@ return [
     'resolvers' => [
         'production' => [
             ResolveCache::class,
+            ResolveVite::class,
             ResolveLocal::class,
             ResolveCdn::class,
         ],
         'dev' => [
             ResolveHmr::class,
+            ResolveVite::class,
             ResolveLocal::class,
             ResolveStaging::class,
             ResolveCache::class,
@@ -55,6 +58,7 @@ return [
         ],
         'local' => [
             ResolveHmr::class,
+            ResolveVite::class,
             ResolveLocal::class,
             ResolveStaging::class
         ]
