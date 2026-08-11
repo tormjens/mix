@@ -53,8 +53,8 @@ return [
             ResolveVite::class,
             ResolveLocal::class,
             ResolveStaging::class,
-            ResolveCache::class,
             ResolveCdn::class,
+            ResolveCache::class,
         ],
         'local' => [
             ResolveHmr::class,

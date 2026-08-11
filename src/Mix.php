@@ -5,10 +5,6 @@ namespace TorMorten\Mix;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\HtmlString;
-use TorMorten\Mix\Resolvers\ResolveCache;
-use TorMorten\Mix\Resolvers\ResolveCdn;
-use TorMorten\Mix\Resolvers\ResolveHmr;
-use TorMorten\Mix\Resolvers\ResolveLocal;
 use TorMorten\Mix\Resolvers\ResolveFallback;
 
 class Mix

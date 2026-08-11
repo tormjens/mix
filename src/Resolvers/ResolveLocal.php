@@ -15,12 +15,14 @@ class ResolveLocal
         $this->params = $params;
         if ($this->exists()) {
             $path = $this->inManifest($params);
+
             $url = url('mix/' . join('/', [
                     $params['package'],
                     Str::startsWith($path, '/') ? substr($path, 1) : $path
                 ])
 
             );
+
             Cache::put(resolve(ResolveCache::class)->cacheKey($params['package'], $params['filename']), $url);
 
             return $url;
