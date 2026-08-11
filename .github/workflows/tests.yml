@@ -12,20 +12,20 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: '0'
 
       - name: Cache dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.composer/cache/files
           key: dependencies-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@v4
         with:
-          php-version: 7.4
+          php-version: 8.4
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
           coverage: none
 
