@@ -18,7 +18,7 @@ class Mix
         $this->home = $home;
     }
 
-    public function handle($filename, $package, $forceLocal = false)
+    public function handle($filename, $package, $forceLocal = false, $vite = false)
     {
         if (!$this->shouldProcess()) {
             return '';
@@ -39,7 +39,7 @@ class Mix
         }
 
         return resolve(Pipeline::class)
-            ->send(compact('filename', 'package', 'forceLocal'))
+            ->send(compact('filename', 'package', 'forceLocal', 'vite'))
             ->through($pipes)
             ->then(fn($params) => new HtmlString(is_string($params) ? $params : ''));
     }

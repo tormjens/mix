@@ -41,7 +41,17 @@ class ResolveCdn
             if (($packages = $packages->where('name', $params['package']))->isNotEmpty()) {
                 $isDevEnvironment = $this->isDevEnvironment();
                 $version = $isDevEnvironment ? 'develop' : $packages->first()['version'];
-                $url = $isDevEnvironment ? $this->buildDevMixUrl($version) : $this->getMixUrl($version);
+
+                if ($params['vite'] ?? false) {
+                    $url = $this->getViteUrl($version);
+
+                    if ($url === null) {
+                        return $next($params);
+                    }
+                } else {
+                    $url = $isDevEnvironment ? $this->buildDevMixUrl($version) : $this->getMixUrl($version);
+                }
+
                 if (config('mix.cache.enabled', true)) {
                     $cacheKey = $this->resolveCache->cacheKey($params['package'], $params['filename']);
                     if ($isDevEnvironment) {
@@ -60,6 +70,24 @@ class ResolveCdn
     public function getMixUrl($version)
     {
         $manifest = $this->getManifest($version);
+        $key = '/' . ltrim($this->params['filename'], '/');
+        if (isset($manifest[$key])) {
+            return $this->buildUrl($version, $manifest[$key]);
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve a Vite-built asset through its manifest. Vite hashes the output
+     * filename, so the manifest must always be read, including on staging where
+     * the dev path otherwise returns the unhashed filename. Falls through (null)
+     * when the manifest cannot be fetched, rather than returning the unhashed
+     * filename that would 404.
+     */
+    public function getViteUrl($version)
+    {
+        $manifest = $this->getManifest($version, 'vite-manifest.json', false);
         $key = '/' . ltrim($this->params['filename'], '/');
         if (isset($manifest[$key])) {
             return $this->buildUrl($version, $manifest[$key]);
@@ -135,11 +163,11 @@ class ResolveCdn
         );
     }
 
-    protected function getManifest($version)
+    protected function getManifest($version, $manifestFile = 'mix-manifest.json', $fallback = true)
     {
         $package = $this->params['package'];
-        $getManifest = function () use ($version, $package) {
-            $path = $this->buildUrl($version, 'mix-manifest.json?time=' . now()->format('YmdHis'));
+        $getManifest = function () use ($version, $package, $manifestFile, $fallback) {
+            $path = $this->buildUrl($version, $manifestFile . '?time=' . now()->format('YmdHis'));
             try {
                 $manifest = Http::get($path)->json();
                 if (!$manifest) {
@@ -147,9 +175,9 @@ class ResolveCdn
                 }
                 return $manifest;
             } catch (\Exception $e) {
-                return [
+                return $fallback ? [
                     Str::start($this->params['filename'], '/') => $this->params['filename']
-                ];
+                ] : [];
             }
         };
         return $getManifest();

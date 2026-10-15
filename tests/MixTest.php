@@ -22,6 +22,41 @@ it('checks the cdn', function () {
     Http::assertNothingSent();
 });
 
+it('resolves a vite asset through the cdn manifest', function () {
+    config([
+        'mix.run_in_tests' => true,
+        'mix.driver.cdn.url' => 'http://cdn.mix.test',
+        'mix.home' => __DIR__ . '/../',
+        'mix.vendor_dir' => 'tests/vendor'
+    ]);
+
+    Http::fake([
+        '*vite-manifest.json*' => Http::response(['/js/app.js' => '/js/app-ABC123.js']),
+    ]);
+
+    $url = resolve(Mix::class)->handle('js/app.js', 'laravel/framework', false, true);
+
+    expect((string) $url)->toBe('http://cdn.mix.test/framework/develop/js/app-ABC123.js');
+});
+
+it('falls through when a vite asset has no manifest entry', function () {
+    config([
+        'mix.run_in_tests' => true,
+        'mix.always_return' => false,
+        'mix.driver.cdn.url' => 'http://cdn.mix.test',
+        'mix.home' => __DIR__ . '/../',
+        'mix.vendor_dir' => 'tests/vendor'
+    ]);
+
+    Http::fake([
+        '*vite-manifest.json*' => Http::response([], 404),
+    ]);
+
+    $url = resolve(Mix::class)->handle('js/app.js', 'laravel/framework', false, true);
+
+    expect((string) $url)->toBe('');
+});
+
 it('checks for hot module reloading', function () {
     config([
         'mix.run_in_tests' => true,
